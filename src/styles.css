@@ -543,8 +543,9 @@
     right: 12px;
     bottom: max(12px, env(safe-area-inset-bottom));
     width: auto;
-    max-height: min(62dvh, 520px);
+    max-height: min(58dvh, 480px);
     margin: 0;
+    padding-bottom: 76px;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -557,15 +558,16 @@
   }
 
   .chart-form .chart-live {
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
+    position: fixed;
+    left: 24px;
+    right: 24px;
+    bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
+    z-index: 6;
     align-self: stretch;
     justify-content: center;
-    width: 100%;
-    margin-top: 4px;
-    background: var(--color-elevated);
-    box-shadow: 0 -14px 18px var(--color-elevated);
+    width: auto;
+    height: 48px;
+    margin: 0;
   }
 
   .panel-toggle {
