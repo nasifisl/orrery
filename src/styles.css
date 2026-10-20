@@ -369,11 +369,75 @@
   font-variant-numeric: tabular-nums;
 }
 
-.note {
-  margin: 12px 0 0;
+.chart-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.field input {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-sunken);
+  color: var(--color-fg);
+  color-scheme: dark;
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.city-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 148px;
+  overflow: auto;
+}
+
+.city {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.city span {
   color: var(--color-subtle);
   font-size: 0.75rem;
-  line-height: 1.45;
+}
+
+.city.is-on {
+  background: var(--color-sunken);
+}
+
+.form-error {
+  margin: 0;
+  color: var(--color-fg);
+  font-size: 0.8125rem;
+}
+
+.chart-live {
+  align-self: flex-start;
+  margin-top: 8px;
 }
 
 .label-anchor {
@@ -496,13 +560,13 @@
     display: none;
   }
 
-  .panel.is-open .panel-more {
-    display: block;
+  .panel.is-open {
+    max-height: min(46dvh, 360px);
+    overflow: auto;
   }
 
-  .panel.is-open {
-    max-height: min(42dvh, 320px);
-    overflow: auto;
+  .panel.is-open .panel-more {
+    display: block;
   }
 
   .panel .note {

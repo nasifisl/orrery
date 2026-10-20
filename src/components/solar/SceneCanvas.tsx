@@ -6,12 +6,15 @@ import {
   AdditiveBlending,
   BufferAttribute,
   BufferGeometry,
+  CanvasTexture,
   Color,
   DoubleSide,
   Line,
   LineBasicMaterial,
   LineLoop,
   PerspectiveCamera,
+  Sprite,
+  SpriteMaterial,
   Vector3,
   type Group,
   type Points,
@@ -20,6 +23,7 @@ import {
 import { BODY, BODIES, PLANETS, type BodyDef, type MoonDef } from "./data";
 import { clock, gesture, useSim } from "./store";
 import { orbitPoint, placeBody } from "./motion";
+import { SIGNS } from "./chart";
 import { buildTextures, disposeTextures, type TextureSet } from "./textures";
 
 const SUN_VERT = /* glsl */ `
@@ -389,6 +393,7 @@ function CameraRig() {
     const chrome = readChrome();
     const wide = overview || focusId === "sun";
     let fit = wide ? systemRadius(aspect) : Math.max(body.view, fitDistance(visualReach(body), fov, chrome.band));
+    if (wide && useSim.getState().chart) fit *= 1.18;
     if (wide && chrome.band < 0.42) fit *= 0.42 / chrome.band;
     fit = Math.min(210, fit);
     if (frame !== seen.current) {
@@ -703,6 +708,16 @@ function Trail({ body }: { body: BodyDef }) {
     line.visible = show;
     if (!show || useSim.getState().paused) return;
     placeBody(body, clock.time, tmp);
+    const prev = (cursor.current + TRAIL - 1) % TRAIL;
+    if (filled.current > 0) {
+      const dx = tmp.x - hist.current[prev * 3]!;
+      const dy = tmp.y - hist.current[prev * 3 + 1]!;
+      const dz = tmp.z - hist.current[prev * 3 + 2]!;
+      if (dx * dx + dy * dy + dz * dz > body.distance * body.distance * 0.12) {
+        filled.current = 0;
+        cursor.current = 0;
+      }
+    }
     const i = cursor.current;
     hist.current[i * 3] = tmp.x;
     hist.current[i * 3 + 1] = tmp.y;
@@ -765,6 +780,85 @@ function Belt() {
   );
 }
 
+function signTexture(label: string, hot: boolean) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 64;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return new CanvasTexture(canvas);
+  ctx.clearRect(0, 0, 128, 64);
+  ctx.fillStyle = hot ? "#f4f1ea" : "#9a948a";
+  ctx.font = "600 28px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, 64, 34);
+  const texture = new CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function Zodiac() {
+  const group = useRef<Group>(null);
+  const sunLon = useSim((s) => (s.chart ? s.chart.sun.lon : null));
+  const active = sunLon == null ? -1 : Math.floor(sunLon / 30);
+  const labels = useMemo(() => {
+    return SIGNS.map((sign, index) => {
+      const texture = signTexture(sign.short, index === active);
+      const material = new SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
+      const sprite = new Sprite(material);
+      const angle = (index + 0.5) * (Math.PI / 6);
+      sprite.position.set(Math.cos(angle) * 31.8, 0.4, Math.sin(angle) * 31.8);
+      sprite.scale.set(5.2, 2.6, 1);
+      sprite.renderOrder = 2;
+      return sprite;
+    });
+  }, [active]);
+
+  useEffect(
+    () => () => {
+      for (const sprite of labels) {
+        const material = sprite.material as SpriteMaterial;
+        material.map?.dispose();
+        material.dispose();
+      }
+    },
+    [labels],
+  );
+
+  const spoke = sunLon == null ? 0 : (sunLon * Math.PI) / 180;
+
+  return (
+    <group ref={group} visible={sunLon != null}>
+      {SIGNS.map((sign, index) => (
+        <mesh key={sign.id} rotation={[Math.PI / 2, 0, 0]} raycast={() => null} frustumCulled={false}>
+          <ringGeometry args={[27.8, 29.8, 24, 1, index * (Math.PI / 6), Math.PI / 6 - 0.045]} />
+          <meshBasicMaterial
+            color={index === active ? "#f3ecdf" : "#8a847a"}
+            transparent
+            opacity={index === active ? 0.95 : 0.45}
+            side={DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+      {sunLon != null ? (
+        <mesh
+          position={[Math.cos(spoke) * 16, 0.08, Math.sin(spoke) * 16]}
+          rotation={[0, -spoke, 0]}
+          raycast={() => null}
+          frustumCulled={false}
+        >
+          <boxGeometry args={[32, 0.05, 0.12]} />
+          <meshBasicMaterial color="#f3ecdf" transparent opacity={0.7} depthWrite={false} />
+        </mesh>
+      ) : null}
+      {labels.map((sprite, index) => (
+        <primitive key={SIGNS[index]!.id} object={sprite} />
+      ))}
+    </group>
+  );
+}
+
 export function SceneCanvas() {
   const textures = useMemo(() => buildTextures(), []);
   useEffect(() => () => disposeTextures(textures), [textures]);
@@ -790,6 +884,7 @@ export function SceneCanvas() {
         <pointLight position={[0, 0, 0]} intensity={9} decay={0} color="#fff3df" />
         <SunBody textures={textures} />
         <Belt />
+        <Zodiac />
         {PLANETS.map((body) => (
           <PlanetBody key={body.id} body={body} textures={textures} />
         ))}
