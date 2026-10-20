@@ -24,6 +24,7 @@ import { BODY, BODIES, PLANETS, type BodyDef, type MoonDef } from "./data";
 import { clock, gesture, useSim } from "./store";
 import { orbitPoint, placeBody } from "./motion";
 import { SIGNS } from "./chart";
+import catalog from "./exoplanets.json";
 import { buildTextures, disposeTextures, type TextureSet } from "./textures";
 
 const SUN_VERT = /* glsl */ `
@@ -287,7 +288,7 @@ function CameraRig() {
   const camera = useThree((s) => s.camera) as PerspectiveCamera;
   const gl = useThree((s) => s.gl);
   const size = useThree((s) => s.size);
-  const spherical = useRef({ radius: 86, phi: 1.15, theta: 0.62 });
+  const spherical = useRef({ radius: 168, phi: 1.15, theta: 0.62 });
   const seen = useRef(0);
   const blend = useRef(1);
   const goalRadius = useRef(86);
@@ -313,7 +314,9 @@ function CameraRig() {
 
     const clampRadius = (r: number) => {
       const id = useSim.getState().focusId;
-      return Math.min(210, Math.max(minRadius(id, BODY[id].radius), r));
+      const wide = useSim.getState().overview || id === "sun";
+      const cap = useSim.getState().exoOpen && wide ? 320 : 210;
+      return Math.min(cap, Math.max(minRadius(id, BODY[id].radius), r));
     };
 
     const down = (e: PointerEvent) => {
@@ -388,14 +391,16 @@ function CameraRig() {
       camera.fov = fov;
       camera.updateProjectionMatrix();
     }
-    const { focusId, frame, overview } = useSim.getState();
+    const { focusId, frame, overview, exoOpen } = useSim.getState();
     const body = BODY[focusId];
     const chrome = readChrome();
     const wide = overview || focusId === "sun";
     let fit = wide ? systemRadius(aspect) : Math.max(body.view, fitDistance(visualReach(body), fov, chrome.band));
     if (wide && useSim.getState().chart) fit *= 1.18;
+    if (wide && exoOpen) fit = Math.max(fit, aspect < 0.85 ? 188 : 168);
     if (wide && chrome.band < 0.42) fit *= 0.42 / chrome.band;
-    fit = Math.min(210, fit);
+    const cap = exoOpen && wide ? 320 : 210;
+    fit = Math.min(cap, fit);
     if (frame !== seen.current) {
       seen.current = frame;
       goalRadius.current = fit;
@@ -436,7 +441,8 @@ function CameraRig() {
     blend.current = 1;
     bag.current.look.copy(bag.current.desired);
     const minR = minRadius(focusId, body.radius);
-    spherical.current.radius = Math.min(210, Math.max(minR, spherical.current.radius));
+    const zoomCap = useSim.getState().exoOpen && wide ? 320 : 210;
+    spherical.current.radius = Math.min(zoomCap, Math.max(minR, spherical.current.radius));
     offsetFrom(spherical.current.radius, spherical.current.phi, spherical.current.theta, bag.current.offset);
     camera.position.copy(bag.current.desired).add(bag.current.offset);
     lookAtFramed();
@@ -871,6 +877,73 @@ function Zodiac() {
   );
 }
 
+const EXO_COLOR: [number, number, number][] = [
+  [0.55, 0.76, 1],
+  [0.98, 0.84, 0.46],
+  [0.98, 0.62, 0.4],
+  [0.74, 0.56, 0.98],
+  [1, 0.42, 0.36],
+  [0.5, 0.9, 0.72],
+  [0.86, 0.7, 0.5],
+  [0.92, 0.92, 0.96],
+  [0.55, 0.88, 0.95],
+  [0.95, 0.7, 0.82],
+  [0.72, 0.95, 0.5],
+];
+
+function ExoField() {
+  const open = useSim((s) => s.exoOpen);
+  const group = useRef<Group>(null);
+  const geometry = useMemo(() => {
+    const rows = catalog.rows as [string, string, number, number, number | null][];
+    const position = new Float32Array(rows.length * 3);
+    const color = new Float32Array(rows.length * 3);
+    const gold = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < rows.length; i += 1) {
+      const ly = rows[i][4] ?? 1200;
+      const spread = Math.log10(Math.max(8, ly));
+      const radius = 42 + Math.min(30, (spread - 0.9) * 14);
+      const angle = i * gold;
+      const lift = ((i * 17) % 100) / 100 - 0.5;
+      position[i * 3] = Math.cos(angle) * radius;
+      position[i * 3 + 1] = lift * 10;
+      position[i * 3 + 2] = Math.sin(angle) * radius;
+      const rgb = EXO_COLOR[rows[i][3]] ?? EXO_COLOR[0];
+      color[i * 3] = rgb[0];
+      color[i * 3 + 1] = rgb[1];
+      color[i * 3 + 2] = rgb[2];
+    }
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new BufferAttribute(position, 3));
+    geo.setAttribute("color", new BufferAttribute(color, 3));
+    return geo;
+  }, []);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
+  useFrame(() => {
+    const g = group.current;
+    if (!g || !open) return;
+    g.rotation.y = clock.time * 0.015;
+  });
+
+  return (
+    <group ref={group} visible={open}>
+      <points geometry={geometry} raycast={() => null} frustumCulled={false}>
+        <pointsMaterial
+          size={4.4}
+          vertexColors
+          transparent
+          opacity={0.95}
+          depthWrite={false}
+          sizeAttenuation
+          blending={AdditiveBlending}
+        />
+      </points>
+    </group>
+  );
+}
+
 export function SceneCanvas() {
   const textures = useMemo(() => buildTextures(), []);
   useEffect(() => () => disposeTextures(textures), [textures]);
@@ -879,7 +952,7 @@ export function SceneCanvas() {
     <>
       <Canvas
         className="webgl"
-        camera={{ position: [42, 38, 68], fov: 48, near: 0.06, far: 800 }}
+        camera={{ position: [82, 74, 128], fov: 48, near: 0.06, far: 900 }}
         dpr={[1, 1.7]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
@@ -897,6 +970,7 @@ export function SceneCanvas() {
         <SunBody textures={textures} />
         <Belt />
         <Zodiac />
+        <ExoField />
         {PLANETS.map((body) => (
           <PlanetBody key={body.id} body={body} textures={textures} />
         ))}

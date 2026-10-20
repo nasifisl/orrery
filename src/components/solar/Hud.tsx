@@ -41,6 +41,7 @@ export function Hud() {
   const toggleOrbits = useSim((s) => s.toggleOrbits);
   const toggleTrails = useSim((s) => s.toggleTrails);
   const setChartOpen = useSim((s) => s.setChartOpen);
+  const exoOpen = useSim((s) => s.exoOpen);
   const setChart = useSim((s) => s.setChart);
   const clearChart = useSim((s) => s.clearChart);
   const body = BODY[focusId];
@@ -78,7 +79,7 @@ export function Hud() {
     <>
       <header className="top">
         <div className="brand">
-          <p className="kicker">The solar system</p>
+          <p className="kicker">{exoOpen ? "6,451 planets around other stars" : "The solar system"}</p>
           <h1>Orrery</h1>
         </div>
         <div className="controls">
@@ -433,6 +434,8 @@ function ChartForm({
 }
 
 function Atlas({ onClose, onFocus }: { onClose: () => void; onFocus: (id: BodyId) => void }) {
+  const exoOpen = useSim((s) => s.exoOpen);
+  const setExoOpen = useSim((s) => s.setExoOpen);
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(40);
   const matches = useMemo(() => {
@@ -455,8 +458,11 @@ function Atlas({ onClose, onFocus }: { onClose: () => void; onFocus: (id: BodyId
         </button>
       </div>
       <p className="glance">
-        Every confirmed planet around another star in the NASA catalog. They stay off the orrery, because they do not orbit our Sun.
+        Each dot around the solar system is one confirmed planet. Gold is a transit, blue is a wobble of the star, purple is a microlens, red is a direct image.
       </p>
+      <button type="button" className={exoOpen ? "btn is-on" : "btn"} onClick={() => setExoOpen(!exoOpen)}>
+        {exoOpen ? "Hide dots" : "Show in the sky"}
+      </button>
       <p className="block-title">In this orrery</p>
       <div className="dock" role="list">
         {BODIES.filter((item) => item.id !== "sun").map((item) => (

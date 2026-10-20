@@ -14,6 +14,7 @@ type SimState = {
   overview: boolean;
   chart: BirthChart | null;
   chartOpen: boolean;
+  exoOpen: boolean;
   togglePaused: () => void;
   setSpeed: (speed: number) => void;
   setFocus: (id: BodyId) => void;
@@ -22,6 +23,7 @@ type SimState = {
   toggleOrbits: () => void;
   toggleTrails: () => void;
   setChartOpen: (open: boolean) => void;
+  setExoOpen: (open: boolean) => void;
   setChart: (chart: BirthChart) => void;
   clearChart: () => void;
 };
@@ -41,6 +43,7 @@ export const useSim = create<SimState>((set) => ({
   overview: true,
   chart: null,
   chartOpen: false,
+  exoOpen: true,
   togglePaused: () =>
     set((s) => {
       if (s.chart && s.paused) {
@@ -60,6 +63,12 @@ export const useSim = create<SimState>((set) => ({
   toggleOrbits: () => set((s) => ({ showOrbits: !s.showOrbits })),
   toggleTrails: () => set((s) => ({ showTrails: !s.showTrails })),
   setChartOpen: (chartOpen) => set({ chartOpen }),
+  setExoOpen: (exoOpen) =>
+    set((s) => ({
+      exoOpen,
+      frame: s.frame + 1,
+      ...(exoOpen ? { focusId: "sun" as const, overview: true } : {}),
+    })),
   setChart: (chart) =>
     set((s) => {
       chartAngles.current = chart.angles;

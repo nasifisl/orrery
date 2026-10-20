@@ -347,6 +347,10 @@
   line-height: 1.4;
 }
 
+.panel-body > .btn {
+  margin-top: 10px;
+}
+
 .block-title {
   margin: 16px 0 0;
   color: var(--color-fg);
