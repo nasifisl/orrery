@@ -138,6 +138,9 @@ export function Hud() {
               <div>
                 <p className="kicker">Sun sign · {chart.place}</p>
                 <h2>{chart.sun.sign.name}</h2>
+                <p className="glance">
+                  Earth’s Moon in {chart.moon.sign.name}, {chart.phase.name.toLowerCase()}, {chart.phase.lit}% lit. Star: {chart.sun.sign.star}.
+                </p>
               </div>
               <button type="button" className="panel-toggle" aria-expanded={details} onClick={() => setDetails((open) => !open)}>
                 {details ? <ChevronUp aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
@@ -146,26 +149,59 @@ export function Hud() {
             </div>
             <div className="panel-more">
               <p className="blurb">{chart.sun.sign.blurb}</p>
+              <p className="block-title">Earth’s Moon</p>
+              <p className="blurb">{chart.moon.sign.moonLine}</p>
+              <dl className="facts">
+                <div className="fact">
+                  <dt>Sign</dt>
+                  <dd>{formatPlacement(chart.moon)}</dd>
+                </div>
+                <div className="fact">
+                  <dt>Phase</dt>
+                  <dd>{chart.phase.name}</dd>
+                </div>
+                <div className="fact">
+                  <dt>Lit</dt>
+                  <dd>{chart.phase.lit}%</dd>
+                </div>
+                <div className="fact">
+                  <dt>Distance</dt>
+                  <dd>384,400 km</dd>
+                </div>
+                <div className="fact">
+                  <dt>Width</dt>
+                  <dd>3,474 km</dd>
+                </div>
+                <div className="fact">
+                  <dt>Month</dt>
+                  <dd>27.3 days</dd>
+                </div>
+              </dl>
+              <p className="note">
+                This is only Earth’s Moon. It keeps one face toward us and has no air of its own. The moons drawn around Jupiter, Saturn, and the others are not part of the chart.
+              </p>
+              <p className="block-title">Star</p>
+              <p className="blurb">{chart.sun.sign.starNote}</p>
               <dl className="facts">
                 <div className="fact">
                   <dt>Sun</dt>
                   <dd>{formatPlacement(chart.sun)}</dd>
                 </div>
                 <div className="fact">
-                  <dt>Moon</dt>
-                  <dd>{formatPlacement(chart.moon)}</dd>
-                </div>
-                <div className="fact">
                   <dt>Rising</dt>
                   <dd>{chart.rising ? formatPlacement(chart.rising) : "—"}</dd>
                 </div>
                 <div className="fact">
-                  <dt>Element</dt>
-                  <dd>{chart.sun.sign.element}</dd>
+                  <dt>Star</dt>
+                  <dd>{chart.sun.sign.star}</dd>
                 </div>
                 <div className="fact">
-                  <dt>Mode</dt>
-                  <dd>{chart.sun.sign.mode}</dd>
+                  <dt>Distance</dt>
+                  <dd>{chart.sun.sign.starDistance}</dd>
+                </div>
+                <div className="fact">
+                  <dt>Element</dt>
+                  <dd>{chart.sun.sign.element}</dd>
                 </div>
                 <div className="fact">
                   <dt>Ruler</dt>
@@ -173,7 +209,7 @@ export function Hud() {
                 </div>
               </dl>
               <p className="note">
-                {chart.place}. {chart.when}. The planets are parked on that sky. Play returns to the moving model.
+                {chart.place}. {chart.when}. The Sun is the only star here. {chart.sun.sign.star} is a background star in the constellation behind it, not a planet.
                 {chart.risingNote ? ` ${chart.risingNote}` : " Rising uses the city’s clock, including daylight saving."}
               </p>
               <button type="button" className="btn chart-live" onClick={clearChart}>
@@ -208,6 +244,40 @@ export function Hud() {
                   </div>
                 ))}
               </dl>
+              {body.id === "earth" ? (
+                <>
+                  <p className="block-title">Earth’s Moon</p>
+                  <p className="blurb">
+                    Earth has one moon. It is a fifth as wide as Earth, keeps the same face toward us, and has no air. The other moons in this model belong to other planets.
+                  </p>
+                  <dl className="facts">
+                    <div className="fact">
+                      <dt>Width</dt>
+                      <dd>3,474 km</dd>
+                    </div>
+                    <div className="fact">
+                      <dt>Distance</dt>
+                      <dd>384,400 km</dd>
+                    </div>
+                    <div className="fact">
+                      <dt>Orbit</dt>
+                      <dd>27.3 days</dd>
+                    </div>
+                    <div className="fact">
+                      <dt>Full cycle</dt>
+                      <dd>29.5 days</dd>
+                    </div>
+                  </dl>
+                </>
+              ) : null}
+              {body.id === "sun" ? (
+                <>
+                  <p className="block-title">The only star</p>
+                  <p className="blurb">
+                    Everything else here shines by reflected sunlight. The twelve signs are constellations of distant stars along the Sun’s path, light-years away, not worlds in this system.
+                  </p>
+                </>
+              ) : null}
               <p className="note">
                 Sizes and spacing are compressed so every world stays in frame. Orbits keep their real order, sped up so the outer planets still drift.
               </p>

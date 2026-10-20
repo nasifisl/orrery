@@ -340,6 +340,21 @@
   line-height: 1.5;
 }
 
+.glance {
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.block-title {
+  margin: 16px 0 0;
+  color: var(--color-fg);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
 .facts {
   display: grid;
   grid-template-columns: 1fr 1fr;

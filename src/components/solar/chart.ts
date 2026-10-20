@@ -23,6 +23,10 @@ export type Sign = {
   ruler: string;
   span: string;
   blurb: string;
+  star: string;
+  starDistance: string;
+  starNote: string;
+  moonLine: string;
 };
 
 export const SIGNS: Sign[] = [
@@ -35,6 +39,10 @@ export const SIGNS: Sign[] = [
     ruler: "Mars",
     span: "Mar 21 – Apr 19",
     blurb: "The first sign of the tropical year. Tradition paints it as direct, restless, and quick to start.",
+    star: "Hamal",
+    starDistance: "66 light-years",
+    starNote: "An orange giant, the brightest star in the ram. The name means lamb.",
+    moonLine: "Tradition reads the Moon in Aries as quick feelings and a short fuse.",
   },
   {
     id: "taurus",
@@ -45,6 +53,10 @@ export const SIGNS: Sign[] = [
     ruler: "Venus",
     span: "Apr 20 – May 20",
     blurb: "A fixed earth sign. The old texts give it patience, appetite, and a dislike of being rushed.",
+    star: "Aldebaran",
+    starDistance: "65 light-years",
+    starNote: "The bull’s eye, a red giant. It sits in front of the Hyades cluster, which is farther away.",
+    moonLine: "Tradition reads the Moon in Taurus as steady moods and a strong need for comfort.",
   },
   {
     id: "gemini",
@@ -55,6 +67,10 @@ export const SIGNS: Sign[] = [
     ruler: "Mercury",
     span: "May 21 – Jun 20",
     blurb: "Mutable air. Curiosity, doubles, and a habit of talking an idea all the way around.",
+    star: "Pollux",
+    starDistance: "34 light-years",
+    starNote: "The brighter twin. Castor, just beside it, is a system of six stars.",
+    moonLine: "Tradition reads the Moon in Gemini as a restless, talkative mind.",
   },
   {
     id: "cancer",
@@ -65,6 +81,10 @@ export const SIGNS: Sign[] = [
     ruler: "Moon",
     span: "Jun 21 – Jul 22",
     blurb: "Cardinal water, ruled by the Moon. Home, memory, and a protective streak.",
+    star: "Al Tarf",
+    starDistance: "290 light-years",
+    starNote: "The brightest star in a faint crab. The Beehive cluster, Praesepe, sits in the same patch of sky.",
+    moonLine: "Tradition reads the Moon in Cancer as its own sign: home, memory, and a protective mood.",
   },
   {
     id: "leo",
@@ -75,6 +95,10 @@ export const SIGNS: Sign[] = [
     ruler: "Sun",
     span: "Jul 23 – Aug 22",
     blurb: "Fixed fire, ruled by the Sun. Warmth, pride, and a taste for being seen.",
+    star: "Regulus",
+    starDistance: "79 light-years",
+    starNote: "The heart of the lion, a blue-white star spinning so fast it is slightly flattened.",
+    moonLine: "Tradition reads the Moon in Leo as warm pride and a wish to be noticed.",
   },
   {
     id: "virgo",
@@ -85,6 +109,10 @@ export const SIGNS: Sign[] = [
     ruler: "Mercury",
     span: "Aug 23 – Sep 22",
     blurb: "Mutable earth. Craft, sorting, and a careful eye for what is unfinished.",
+    star: "Spica",
+    starDistance: "250 light-years",
+    starNote: "A pair of hot blue stars so close they pull each other out of shape.",
+    moonLine: "Tradition reads the Moon in Virgo as a careful, useful kind of worry.",
   },
   {
     id: "libra",
@@ -95,6 +123,10 @@ export const SIGNS: Sign[] = [
     ruler: "Venus",
     span: "Sep 23 – Oct 22",
     blurb: "Cardinal air. Pairs, balance, and a wish to settle the room before moving.",
+    star: "Zubeneschamali",
+    starDistance: "185 light-years",
+    starNote: "The northern claw, left over from when these stars were the scorpion’s claws.",
+    moonLine: "Tradition reads the Moon in Libra as a need for company and an even mood.",
   },
   {
     id: "scorpio",
@@ -105,6 +137,10 @@ export const SIGNS: Sign[] = [
     ruler: "Mars",
     span: "Oct 23 – Nov 21",
     blurb: "Fixed water. The tradition gives it depth, secrecy, and a long memory.",
+    star: "Antares",
+    starDistance: "550 light-years",
+    starNote: "The rival of Mars, a red supergiant hundreds of times wider than the Sun.",
+    moonLine: "Tradition reads the Moon in Scorpio as deep feeling and a long memory.",
   },
   {
     id: "sagittarius",
@@ -115,6 +151,10 @@ export const SIGNS: Sign[] = [
     ruler: "Jupiter",
     span: "Nov 22 – Dec 21",
     blurb: "Mutable fire. Distance, belief, and a hunger for the next horizon.",
+    star: "Kaus Australis",
+    starDistance: "143 light-years",
+    starNote: "The southern part of the archer’s bow. This constellation points toward the center of the galaxy.",
+    moonLine: "Tradition reads the Moon in Sagittarius as a hopeful, restless mood.",
   },
   {
     id: "capricorn",
@@ -125,6 +165,10 @@ export const SIGNS: Sign[] = [
     ruler: "Saturn",
     span: "Dec 22 – Jan 19",
     blurb: "Cardinal earth. Time, duty, and building something that outlasts the mood.",
+    star: "Deneb Algedi",
+    starDistance: "39 light-years",
+    starNote: "The tail of the goat. It is a white star that brightens and fades a little every day.",
+    moonLine: "Tradition reads the Moon in Capricorn as reserved feeling and a long plan.",
   },
   {
     id: "aquarius",
@@ -135,6 +179,10 @@ export const SIGNS: Sign[] = [
     ruler: "Saturn",
     span: "Jan 20 – Feb 18",
     blurb: "Fixed air. The old ruler is Saturn. It is cast as independent, social, and slightly apart.",
+    star: "Sadalsuud",
+    starDistance: "540 light-years",
+    starNote: "The luckiest of the lucky, a yellow supergiant. Aquarius is a faint constellation.",
+    moonLine: "Tradition reads the Moon in Aquarius as a cool, independent feeling.",
   },
   {
     id: "pisces",
@@ -145,6 +193,10 @@ export const SIGNS: Sign[] = [
     ruler: "Jupiter",
     span: "Feb 19 – Mar 20",
     blurb: "The last sign, mutable water. Tradition gives it empathy, drift, and a porous edge.",
+    star: "Alpherg",
+    starDistance: "350 light-years",
+    starNote: "The brightest star in the fishes. Alrescha, the knot in the cord, is the one most people name.",
+    moonLine: "Tradition reads the Moon in Pisces as a soft, easily moved mood.",
   },
 ];
 
@@ -253,6 +305,11 @@ export type Placement = {
   lon: number;
 };
 
+export type MoonPhase = {
+  name: string;
+  lit: number;
+};
+
 export type BirthChart = {
   place: string;
   when: string;
@@ -260,6 +317,7 @@ export type BirthChart = {
   moon: Placement;
   rising: Placement | null;
   risingNote: string | null;
+  phase: MoonPhase;
   angles: Partial<Record<BodyId, number>>;
 };
 
@@ -399,6 +457,28 @@ export function zonedTimeToUtc(date: string, time: string, timeZone: string) {
   return new Date(guess - tzOffsetMs(timeZone, utc));
 }
 
+export function moonPhase(sunLon: number, moonLon: number): MoonPhase {
+  const angle = wrap360(moonLon - sunLon);
+  const lit = Math.round(((1 - Math.cos(angle * RAD)) / 2) * 100);
+  const name =
+    angle < 22.5 || angle >= 337.5
+      ? "New"
+      : angle < 67.5
+        ? "Waxing crescent"
+        : angle < 112.5
+          ? "First quarter"
+          : angle < 157.5
+            ? "Waxing gibbous"
+            : angle < 202.5
+              ? "Full"
+              : angle < 247.5
+                ? "Waning gibbous"
+                : angle < 292.5
+                  ? "Last quarter"
+                  : "Waning crescent";
+  return { name, lit };
+}
+
 export function searchCities(query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return CITIES.slice(0, 6);
@@ -431,6 +511,8 @@ export function readChart(input: { date: string; time: string; city: City | null
   const angles: Partial<Record<BodyId, number>> = {};
   for (const el of PLANETS) angles[el.id] = (helioLongitude(el, jd) * Math.PI) / 180;
 
+  const phase = moonPhase(sun.lon, moon.lon);
+
   const place = input.city ? `${input.city.name}, ${input.city.region}` : "Time treated as UTC";
   const when = new Intl.DateTimeFormat("en", {
     dateStyle: "long",
@@ -438,5 +520,5 @@ export function readChart(input: { date: string; time: string; city: City | null
     timeZone: zone,
   }).format(instant);
 
-  return { ok: true, chart: { place, when, sun, moon, rising, risingNote, angles } };
+  return { ok: true, chart: { place, when, sun, moon, rising, risingNote, phase, angles } };
 }
