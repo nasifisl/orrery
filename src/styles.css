@@ -504,7 +504,7 @@
     inset: auto;
     order: 2;
     flex: 1 1 auto;
-    min-height: 220px;
+    min-height: 180px;
   }
 
   .top {
@@ -529,10 +529,43 @@
     left: auto;
     flex: none;
     width: auto;
+    min-height: 0;
     max-height: none;
     margin: 0 12px 8px;
     padding: 12px 14px;
     overflow: visible;
+  }
+
+  .panel.is-sheet {
+    position: absolute;
+    z-index: 4;
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto;
+    max-height: min(62dvh, 520px);
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+  }
+
+  .app:has(.panel.is-sheet) .bottom {
+    visibility: hidden;
+  }
+
+  .chart-form .chart-live {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    align-self: stretch;
+    justify-content: center;
+    width: 100%;
+    margin-top: 4px;
+    background: var(--color-elevated);
+    box-shadow: 0 -14px 18px var(--color-elevated);
   }
 
   .panel-toggle {
@@ -563,6 +596,8 @@
   .panel.is-open {
     max-height: min(46dvh, 360px);
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   .panel.is-open .panel-more {

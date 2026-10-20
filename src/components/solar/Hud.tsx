@@ -121,7 +121,7 @@ export function Hud() {
         </div>
       </header>
 
-      <aside className={details || chartOpen ? "panel is-open" : "panel"} aria-live="polite">
+      <aside className={chartOpen ? "panel is-open is-sheet" : details ? "panel is-open" : "panel"} aria-live="polite">
         {chartOpen ? (
           <ChartForm
             onClose={() => setChartOpen(false)}
@@ -293,24 +293,26 @@ function ChartForm({
           }}
         />
       </label>
-      <div className="city-list" role="listbox" aria-label="Cities">
-        {matches.map((item) => (
-          <button
-            key={`${item.name}-${item.region}`}
-            type="button"
-            role="option"
-            aria-selected={city === item}
-            className={city === item ? "city is-on" : "city"}
-            onClick={() => {
-              setCity(item);
-              setQuery(`${item.name}, ${item.region}`);
-            }}
-          >
-            {item.name}
-            <span>{item.region}</span>
-          </button>
-        ))}
-      </div>
+      {city ? null : (
+        <div className="city-list" role="listbox" aria-label="Cities">
+          {matches.map((item) => (
+            <button
+              key={`${item.name}-${item.region}`}
+              type="button"
+              role="option"
+              aria-selected={false}
+              className="city"
+              onClick={() => {
+                setCity(item);
+                setQuery(`${item.name}, ${item.region}`);
+              }}
+            >
+              {item.name}
+              <span>{item.region}</span>
+            </button>
+          ))}
+        </div>
+      )}
       {error ? <p className="form-error">{error}</p> : null}
       <button type="submit" className="btn primary chart-live">
         Read chart
