@@ -1,4 +1,4 @@
-import type { BodyId } from "./data";
+import { BODY, type BodyId } from "./data";
 
 export type SignId =
   | "aries"
@@ -310,6 +310,13 @@ export type MoonPhase = {
   lit: number;
 };
 
+export type SystemPlace = {
+  id: BodyId;
+  name: string;
+  kind: string;
+  place: Placement;
+};
+
 export type BirthChart = {
   place: string;
   when: string;
@@ -318,6 +325,7 @@ export type BirthChart = {
   rising: Placement | null;
   risingNote: string | null;
   phase: MoonPhase;
+  system: SystemPlace[];
   angles: Partial<Record<BodyId, number>>;
 };
 
@@ -347,6 +355,11 @@ const PLANETS: PlanetEl[] = [
   { id: "saturn", a0: 9.53667594, aDot: -0.0012506, e0: 0.05386179, eDot: -0.00050991, I0: 2.48599187, IDot: 0.00193609, L0: 49.95424423, LDot: 1222.49362201, w0: 92.59887831, wDot: -0.41897216, O0: 113.66242448, ODot: -0.28867794 },
   { id: "uranus", a0: 19.18916464, aDot: -0.00196176, e0: 0.04725744, eDot: -0.00004397, I0: 0.77263783, IDot: -0.00242939, L0: 313.23810451, LDot: 428.48202785, w0: 170.9542763, wDot: 0.40805281, O0: 74.01692503, ODot: 0.04240589 },
   { id: "neptune", a0: 30.06992276, aDot: 0.00026291, e0: 0.00859048, eDot: 0.00005105, I0: 1.77004347, IDot: 0.00035372, L0: -55.12002969, LDot: 218.45945325, w0: 44.96476227, wDot: -0.32241464, O0: 131.78422574, ODot: -0.00508664 },
+  { id: "ceres", a0: 2.77, aDot: 0, e0: 0.0797, eDot: 0, I0: 10.6, IDot: 0, L0: 158.4643, LDot: 7826.7857, w0: 153.5, wDot: 0, O0: 80.2, ODot: 0 },
+  { id: "pluto", a0: 39.48168677, aDot: -0.00076912, e0: 0.24880766, eDot: 0.00006465, I0: 17.14175, IDot: 0.003075, L0: 238.92881, LDot: 145.20775, w0: 224.06676, wDot: -0.036736, O0: 110.30347, ODot: -0.010369 },
+  { id: "haumea", a0: 43.1, aDot: 0, e0: 0.194, eDot: 0, I0: 28.2, IDot: 0, L0: 192.2526, LDot: 127.6602, w0: 3, wDot: 0, O0: 122, ODot: 0 },
+  { id: "makemake", a0: 45.6, aDot: 0, e0: 0.159, eDot: 0, I0: 29, IDot: 0, L0: 155.2645, LDot: 117.4018, w0: 16.3, wDot: 0, O0: 79.3, ODot: 0 },
+  { id: "eris", a0: 67.9, aDot: 0, e0: 0.438, eDot: 0, I0: 43.9, IDot: 0, L0: 22.044, LDot: 64.1415, w0: 187, wDot: 0, O0: 36, ODot: 0 },
 ];
 
 const RAD = Math.PI / 180;
@@ -509,7 +522,13 @@ export function readChart(input: { date: string; time: string; city: City | null
   }
 
   const angles: Partial<Record<BodyId, number>> = {};
-  for (const el of PLANETS) angles[el.id] = (helioLongitude(el, jd) * Math.PI) / 180;
+  const system: SystemPlace[] = [];
+  for (const el of PLANETS) {
+    const lon = helioLongitude(el, jd);
+    angles[el.id] = (lon * Math.PI) / 180;
+    const body = BODY[el.id];
+    system.push({ id: el.id, name: body.name, kind: body.kind, place: signAt(lon) });
+  }
 
   const phase = moonPhase(sun.lon, moon.lon);
 
@@ -520,5 +539,5 @@ export function readChart(input: { date: string; time: string; city: City | null
     timeZone: zone,
   }).format(instant);
 
-  return { ok: true, chart: { place, when, sun, moon, rising, risingNote, phase, angles } };
+  return { ok: true, chart: { place, when, sun, moon, rising, risingNote, phase, system, angles } };
 }

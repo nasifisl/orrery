@@ -565,15 +565,27 @@ function PlanetBody({ body, textures }: { body: BodyDef; textures: TextureSet })
       ? textures.mercury
       : body.id === "venus"
         ? textures.venus
-        : body.id === "mars"
+        : body.id === "mars" || body.id === "ceres" || body.id === "pluto" || body.id === "makemake"
           ? textures.mars
           : body.id === "jupiter"
             ? textures.jupiter
             : body.id === "saturn"
               ? textures.saturn
-              : body.id === "uranus"
+              : body.id === "uranus" || body.id === "haumea" || body.id === "eris"
                 ? textures.uranus
                 : textures.neptune;
+  const tint =
+    body.id === "ceres"
+      ? "#c4b8a4"
+      : body.id === "pluto"
+        ? "#e7d7c8"
+        : body.id === "haumea"
+          ? "#f4f2ec"
+          : body.id === "makemake"
+            ? "#e0b49a"
+            : body.id === "eris"
+              ? "#f7f7f4"
+              : "#ffffff";
 
   useFrame(() => {
     const g = group.current;
@@ -595,7 +607,7 @@ function PlanetBody({ body, textures }: { body: BodyDef; textures: TextureSet })
           ) : (
             <mesh raycast={() => null}>
               <sphereGeometry args={[body.radius, 64, 48]} />
-              <meshStandardMaterial map={map} roughness={body.roughness} metalness={0.03} emissive="#10141a" emissiveIntensity={0.18} />
+              <meshStandardMaterial map={map} color={tint} roughness={body.roughness} metalness={0.03} emissive="#10141a" emissiveIntensity={0.18} />
             </mesh>
           )}
         </group>

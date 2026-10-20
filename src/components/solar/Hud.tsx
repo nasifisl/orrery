@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, ChevronUp, Circle, Pause, Play, RotateCcw, Sparkles, Spline, Tag } from "lucide-react";
+import { ChevronDown, ChevronUp, Circle, Globe, Pause, Play, RotateCcw, Sparkles, Spline, Tag } from "lucide-react";
 import { searchCities, formatPlacement, readChart, type City } from "./chart";
 import { BODY, BODIES, type BodyId } from "./data";
+import catalog from "./exoplanets.json";
 import { useSim } from "./store";
+
+const EXO = catalog as {
+  asOf: string;
+  count: number;
+  methods: string[];
+  rows: [string, string, number, number, number | null][];
+};
 
 const KEYS: Record<string, BodyId> = {
   "0": "sun",
@@ -37,6 +45,7 @@ export function Hud() {
   const clearChart = useSim((s) => s.clearChart);
   const body = BODY[focusId];
   const [details, setDetails] = useState(false);
+  const [atlas, setAtlas] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -97,10 +106,25 @@ export function Hud() {
             type="button"
             className={openChart ? "btn is-on" : "btn"}
             aria-pressed={openChart}
-            onClick={() => setChartOpen(!chartOpen)}
+            onClick={() => {
+              setAtlas(false);
+              setChartOpen(!chartOpen);
+            }}
           >
             <Sparkles aria-hidden="true" />
             Chart
+          </button>
+          <button
+            type="button"
+            className={atlas ? "btn is-on" : "btn"}
+            aria-pressed={atlas}
+            onClick={() => {
+              setChartOpen(false);
+              setAtlas((open) => !open);
+            }}
+          >
+            <Globe aria-hidden="true" />
+            Worlds
           </button>
           <button type="button" className={showLabels ? "btn is-on" : "btn"} aria-pressed={showLabels} onClick={toggleLabels}>
             <Tag aria-hidden="true" />
@@ -121,17 +145,20 @@ export function Hud() {
         </div>
       </header>
 
-      <aside className={chartOpen ? "panel is-open is-sheet" : details ? "panel is-open" : "panel"} aria-live="polite">
+      <aside className={chartOpen || atlas ? "panel is-open is-sheet" : details ? "panel is-open" : "panel"} aria-live="polite">
         {chartOpen ? (
           <ChartForm
             onClose={() => setChartOpen(false)}
             onRead={(date, time, city) => {
               const result = readChart({ date, time, city });
               if (!result.ok) return result.error;
+              setAtlas(false);
               setChart(result.chart);
               return null;
             }}
           />
+        ) : atlas ? (
+          <Atlas onClose={() => setAtlas(false)} onFocus={setFocus} />
         ) : chart ? (
           <div className="panel-body">
             <div className="panel-head">
@@ -208,8 +235,22 @@ export function Hud() {
                   <dd>{chart.sun.sign.ruler}</dd>
                 </div>
               </dl>
+              <p className="block-title">Worlds in this system</p>
+              <ul className="sign-list">
+                {chart.system.map((item) => (
+                  <li key={item.id}>
+                    <button type="button" onClick={() => setFocus(item.id)}>
+                      {item.name}
+                    </button>
+                    <span>
+                      {formatPlacement(item.place)}
+                      {item.kind === "Dwarf planet" ? " · dwarf" : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
               <p className="note">
-                {chart.place}. {chart.when}. The Sun is the only star here. {chart.sun.sign.star} is a background star in the constellation behind it, not a planet.
+                {chart.place}. {chart.when}. Eight planets and five dwarf planets are parked on that sky. Planets around other stars are in Worlds, not in this system.
                 {chart.risingNote ? ` ${chart.risingNote}` : " Rising uses the city’s clock, including daylight saving."}
               </p>
               <button type="button" className="btn chart-live" onClick={clearChart}>
@@ -388,5 +429,73 @@ function ChartForm({
         Read chart
       </button>
     </form>
+  );
+}
+
+function Atlas({ onClose, onFocus }: { onClose: () => void; onFocus: (id: BodyId) => void }) {
+  const [query, setQuery] = useState("");
+  const [shown, setShown] = useState(40);
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return EXO.rows;
+    return EXO.rows.filter((row) => row[0].toLowerCase().includes(q) || row[1].toLowerCase().includes(q));
+  }, [query]);
+  const page = matches.slice(0, shown);
+
+  return (
+    <div className="panel-body">
+      <div className="panel-head">
+        <div>
+          <p className="kicker">Other stars · {EXO.asOf}</p>
+          <h2>{EXO.count.toLocaleString()} planets</h2>
+        </div>
+        <button type="button" className="panel-toggle" onClick={onClose}>
+          <ChevronUp aria-hidden="true" />
+          Close
+        </button>
+      </div>
+      <p className="glance">
+        Every confirmed planet around another star in the NASA catalog. They stay off the orrery, because they do not orbit our Sun.
+      </p>
+      <p className="block-title">In this orrery</p>
+      <div className="dock" role="list">
+        {BODIES.filter((item) => item.id !== "sun").map((item) => (
+          <button key={item.id} type="button" className="chip" onClick={() => onFocus(item.id)}>
+            {item.name}
+          </button>
+        ))}
+      </div>
+      <label className="field">
+        Search
+        <input
+          type="search"
+          value={query}
+          placeholder="TRAPPIST, Kepler, 55 Cnc"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setShown(40);
+          }}
+        />
+      </label>
+      <p className="note">
+        {matches.length.toLocaleString()} {matches.length === 1 ? "match" : "matches"}.
+      </p>
+      <div className="exo-list">
+        {page.map((row) => (
+          <div className="exo-row" key={row[0]}>
+            <strong>{row[0]}</strong>
+            <span>
+              {row[1]} · {row[2]} · {EXO.methods[row[3]]}
+              {row[4] != null ? ` · ${row[4].toLocaleString()} ly` : ""}
+            </span>
+          </div>
+        ))}
+      </div>
+      {shown < matches.length ? (
+        <button type="button" className="btn" onClick={() => setShown((count) => count + 40)}>
+          Show more
+        </button>
+      ) : null}
+    </div>
   );
 }

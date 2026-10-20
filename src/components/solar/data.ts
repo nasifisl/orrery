@@ -7,7 +7,12 @@ export type BodyId =
   | "jupiter"
   | "saturn"
   | "uranus"
-  | "neptune";
+  | "neptune"
+  | "ceres"
+  | "pluto"
+  | "haumea"
+  | "makemake"
+  | "eris";
 
 export type Fact = { label: string; value: string };
 
@@ -63,6 +68,7 @@ export const BODIES: BodyDef[] = [
       { label: "Core", value: "15 million °C" },
       { label: "Age", value: "4.6 billion yr" },
       { label: "Planets", value: "8" },
+      { label: "Dwarf planets", value: "5" },
     ],
     radius: 2.2,
     distance: 0,
@@ -332,6 +338,146 @@ export const BODIES: BodyDef[] = [
     moons: [
       { name: "Triton", radius: 0.07, distance: 1.55, period: 7.5, phase: 4.4, color: "#d6e4ea" },
     ],
+  },
+  {
+    id: "ceres",
+    name: "Ceres",
+    kind: "Dwarf planet",
+    blurb:
+      "The only dwarf planet inside the asteroid belt. A dark, cratered ball with bright salt spots, found in 1801.",
+    facts: [
+      { label: "Diameter", value: "939 km" },
+      { label: "Distance", value: "2.77 AU" },
+      { label: "Year", value: "4.6 years" },
+      { label: "Found", value: "1801" },
+      { label: "Moons", value: "None" },
+      { label: "Class", value: "Dwarf planet" },
+    ],
+    radius: 0.18,
+    distance: 13.1,
+    orbitSeconds: 48,
+    inclination: 0.16,
+    phase: 1.2,
+    spin: 0.4,
+    tilt: 0.07,
+    view: 2.2,
+    trail: "#c4b8a4",
+    atmosphere: "#b7aa9a",
+    atm: 0.08,
+    roughness: 0.95,
+    moons: [],
+  },
+  {
+    id: "pluto",
+    name: "Pluto",
+    kind: "Dwarf planet",
+    blurb:
+      "A distant icy world with a heart-shaped glacier. It was called the ninth planet until 2006, when it became the first of the dwarf planets.",
+    facts: [
+      { label: "Diameter", value: "2,377 km" },
+      { label: "Distance", value: "39.5 AU" },
+      { label: "Year", value: "248 years" },
+      { label: "Found", value: "1930" },
+      { label: "Moons", value: "5" },
+      { label: "Class", value: "Dwarf planet" },
+    ],
+    radius: 0.22,
+    distance: 31,
+    orbitSeconds: 220,
+    inclination: 0.22,
+    phase: 3.4,
+    spin: 0.22,
+    tilt: 0.2,
+    view: 2.4,
+    trail: "#e7d7c8",
+    atmosphere: "#d9cbb8",
+    atm: 0.12,
+    roughness: 0.88,
+    moons: [{ name: "Charon", radius: 0.11, distance: 0.72, period: 8, phase: 1.4, color: "#c8c0b4" }],
+  },
+  {
+    id: "haumea",
+    name: "Haumea",
+    kind: "Dwarf planet",
+    blurb:
+      "An egg-shaped ice world that spins once every four hours. It has a thin ring and two moons.",
+    facts: [
+      { label: "Width", value: "About 1,560 km" },
+      { label: "Distance", value: "43 AU" },
+      { label: "Year", value: "284 years" },
+      { label: "Found", value: "2004" },
+      { label: "Moons", value: "2" },
+      { label: "Ring", value: "One thin ring" },
+    ],
+    radius: 0.17,
+    distance: 32.6,
+    orbitSeconds: 250,
+    inclination: 0.34,
+    phase: 5.1,
+    spin: 1.8,
+    tilt: 0.3,
+    view: 2.3,
+    trail: "#f2f0ea",
+    atmosphere: "#e4e2da",
+    atm: 0.06,
+    roughness: 0.7,
+    moons: [{ name: "Hiʻiaka", radius: 0.06, distance: 0.7, period: 10, phase: 0.6, color: "#eceae4" }],
+  },
+  {
+    id: "makemake",
+    name: "Makemake",
+    kind: "Dwarf planet",
+    blurb:
+      "A reddish ice world past Pluto, with one small moon. Its surface is frozen methane.",
+    facts: [
+      { label: "Diameter", value: "1,430 km" },
+      { label: "Distance", value: "45.8 AU" },
+      { label: "Year", value: "306 years" },
+      { label: "Found", value: "2005" },
+      { label: "Moons", value: "1" },
+      { label: "Surface", value: "Methane ice" },
+    ],
+    radius: 0.17,
+    distance: 33.6,
+    orbitSeconds: 270,
+    inclination: 0.35,
+    phase: 0.4,
+    spin: 0.5,
+    tilt: 0.1,
+    view: 2.3,
+    trail: "#e0b49a",
+    atmosphere: "#d7aa90",
+    atm: 0.06,
+    roughness: 0.84,
+    moons: [{ name: "MK2", radius: 0.04, distance: 0.62, period: 12, phase: 2.2, color: "#b7b0a6" }],
+  },
+  {
+    id: "eris",
+    name: "Eris",
+    kind: "Dwarf planet",
+    blurb:
+      "Slightly smaller than Pluto and much farther out. Finding it in 2005 is what forced the argument that reclassified Pluto.",
+    facts: [
+      { label: "Diameter", value: "2,326 km" },
+      { label: "Distance", value: "68 AU" },
+      { label: "Year", value: "559 years" },
+      { label: "Found", value: "2005" },
+      { label: "Moons", value: "1" },
+      { label: "Class", value: "Dwarf planet" },
+    ],
+    radius: 0.21,
+    distance: 36.2,
+    orbitSeconds: 340,
+    inclination: 0.46,
+    phase: 2.7,
+    spin: 0.3,
+    tilt: 0.15,
+    view: 2.5,
+    trail: "#f7f7f4",
+    atmosphere: "#e7e7e2",
+    atm: 0.08,
+    roughness: 0.62,
+    moons: [{ name: "Dysnomia", radius: 0.06, distance: 0.78, period: 14, phase: 3.3, color: "#d0d0cc" }],
   },
 ];
 

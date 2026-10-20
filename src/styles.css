@@ -355,6 +355,64 @@
   letter-spacing: 0.04em;
 }
 
+.sign-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sign-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.sign-list button {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--color-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.sign-list span {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.exo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.exo-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-sunken);
+}
+
+.exo-row strong {
+  font-weight: 560;
+  font-size: 0.875rem;
+}
+
+.exo-row span {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
 .facts {
   display: grid;
   grid-template-columns: 1fr 1fr;
